@@ -1,0 +1,38 @@
+version: '3.9'
+ 
+services:
+  flask:
+    image: flask_project
+    build: 
+      context: ./Flask-App
+      dockerfile: Dockerfile
+    ports: 
+      - 4444:4444
+    expose:
+      - 8888
+  nodejs:
+    image: nodejs-image
+    build:
+      context: ./node_project
+      dockerfile: Dockerfile
+    ports: 
+      - 5555:5555
+    expose:
+      - 8888
+  haproxy:
+    image: hypriot/rpi-haproxy
+    volumes:
+    - haproxy:/haproxy-override
+    links:
+    - flask
+    - nodejs
+    ports:
+    - "8888:8888"
+    - "70:70"
+
+    expose:
+    - "8888"
+    - "70"
+
+volumes: 
+  haproxy:
